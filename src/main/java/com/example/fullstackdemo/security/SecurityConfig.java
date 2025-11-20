@@ -1,9 +1,9 @@
 package com.example.fullstackdemo.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,34 +12,45 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(customUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
             .csrf(csrf -> csrf.disable())
-
-            .userDetailsService(customUserDetailsService)
+            .authenticationProvider(authenticationProvider())
 
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                        "/",
-                        "/login",
-                        "/register",
-                        "/register-success",
-                        "/verify/**",
-                        "/css/**",
-                        "/js/**",
-                        "/images/**",
-                        "/public/**",
-                        "/h2-console/**"
+                    "/", "/home",
+                    "/login", "/register", "/register-success",
+                    "/verify/**",
+                    "/password/**",
+                    "/css/**", "/js/**", "/images/**",
+                    "/public/**", "/h2-console/**"
                 ).permitAll()
 
+                // PROTEKSI cart & ht
                 .requestMatchers("/cart/**").authenticated()
-                .requestMatchers("/ht").authenticated()
-                .requestMatchers("/checkout-success").authenticated()
+                .requestMatchers("/ht/**").authenticated()
 
                 .anyRequest().authenticated()
             )
@@ -47,12 +58,9 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-
-                // 🔥 WAJIB AGAR LOGIN EMAIL BERHASIL
-                .usernameParameter("username")
+                .usernameParameter("email")
                 .passwordParameter("password")
-
-                .defaultSuccessUrl("/", true)
+                .defaultSuccessUrl("/home", true)
                 .permitAll()
             )
 
@@ -62,19 +70,14 @@ public class SecurityConfig {
                 .permitAll()
             );
 
+        // h2 console
         http.headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
         return http.build();
     }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }

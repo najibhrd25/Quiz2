@@ -2,14 +2,13 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 
-    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>AlRent - <span th:replace="${title}"></span></title>
+    <title th:text="'AlRent - ' + ${title}"></title>
 
     <style>
         body {
@@ -43,10 +42,7 @@
             color: #FFD700;
         }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-        }
+        .nav-links { display: flex; align-items: center; }
 
         #menu-toggle {
             display: none;
@@ -69,19 +65,6 @@
             padding: 12px;
             width: 170px;
             text-align: right;
-            box-shadow: 0 0 12px rgba(255,215,0,0.25);
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        #mobile-menu a {
-            color: white;
-            text-decoration: none;
-            margin: 8px 0;
-            display: block;
-        }
-
-        #mobile-menu a:hover {
-            color: #FFD700;
         }
 
         .container {
@@ -98,138 +81,61 @@
             border-top: 1px solid #333;
             color: #bbb;
             font-size: 14px;
-            letter-spacing: 0.3px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            #menu-toggle { display: block; }
-        }
     </style>
-
-    <!-- SWEETALERT SUCCESS -->
-    <script th:if="${success != null}">
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'success',
-                title: /*[[${success}]]*/,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                background: '#1a1a1a',
-                color: '#FFD700'
-            });
-        });
-    </script>
 
 </head>
 
 <body>
 
-<!-- START: FRAGMENT WRAPPER -->
-<div th:fragment="layout">
+<div th:fragment="layout(content)">
 
     <!-- NAVBAR -->
     <nav>
+        <div><strong style="color:#FFD700; font-size:22px;">AlRent</strong></div>
 
-        <div style="display:flex; align-items:center;">
-            <strong style="color:#FFD700; font-size:22px;">AlRent</strong>
-        </div>
-
-        <!-- DESKTOP MENU -->
         <div class="nav-links">
 
-            <a th:href="@{/}">Home</a>
+            <a th:href="@{/home}">Home</a>
             <a th:href="@{/ht}">Daftar HT</a>
             <a th:href="@{/cart}">Keranjang</a>
 
             <span th:if="${#authentication.authenticated}"
-                  style="color:#FFD700; margin:0 25px 0 35px; font-weight:500;"
+                  style="color:#FFD700; margin:0 25px 0 35px;"
                   th:text="${#authentication.getName()}"></span>
 
             <form th:if="${#authentication.authenticated}"
                   th:action="@{/logout}" method="post" style="display:inline;">
-                <button type="submit"
-                        style="background:none; border:none; color:white; font-weight:bold; cursor:pointer;">
-                    Logout
-                </button>
+                <button style="background:none; border:none; color:white;">Logout</button>
             </form>
 
             <a th:if="${!#authentication.authenticated}"
                th:href="@{/login}"
-               style="background:#FFD700; color:black; padding:6px 12px; border-radius:6px; font-weight:bold;">
+               style="background:#FFD700; color:black; padding:6px 12px; border-radius:6px;">
                 Login
             </a>
 
         </div>
 
-        <!-- MOBILE BUTTON -->
         <button id="menu-toggle">☰</button>
-
-        <!-- MOBILE MENU -->
-        <div id="mobile-menu">
-
-            <a th:href="@{/}">Home</a>
-            <a th:href="@{/ht}">Daftar HT</a>
-            <a th:href="@{/cart}">Keranjang</a>
-
-            <form th:if="${#authentication.authenticated}"
-                  th:action="@{/logout}" method="post" style="margin:5px 0;">
-                <button type="submit"
-                        style="background:none; border:none; color:#FFD700; font-weight:bold; cursor:pointer;">
-                    Logout
-                </button>
-            </form>
-
-            <a th:if="${!#authentication.authenticated}"
-               th:href="@{/login}"
-               style="background:#FFD700; color:black; padding:6px 12px; border-radius:6px; font-weight:bold;">
-                Login
-            </a>
-        </div>
-
     </nav>
 
-    <!-- MOBILE MENU SCRIPT -->
     <script>
         const toggle = document.getElementById('menu-toggle');
         const menu = document.getElementById('mobile-menu');
-
         toggle.addEventListener('click', () => {
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         });
     </script>
 
-    <!-- PAGE CONTENT (slot) -->
     <div class="container">
-        <th:block th:insert="~{::content}"></th:block>
+        <th:block th:replace="${content}"></th:block>
     </div>
 
-    <!-- FOOTER -->
     <footer id="footer-date"></footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const footer = document.getElementById('footer-date');
-            const date = new Date();
-            const options = { day: '2-digit', month: 'long', year: 'numeric' };
-            const formattedDate = date.toLocaleDateString('id-ID', options);
-
-            footer.innerHTML = `© ${formattedDate} —
-                <strong style="color:#FFD700;">AlRent</strong> |
-                Design by <strong style="color:#FFD700;">Najib</strong>`;
-        });
-    </script>
-
 </div>
-<!-- END: FRAGMENT WRAPPER -->
 
 </body>
 </html>

@@ -1,108 +1,103 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="layouts/main :: layout">
+<th:block th:with="title='Keranjang'"></th:block>
 
-<div th:fragment="content">
+<!-- WAJIB: PAKAI PARAMETER CONTENT -->
+<th:block th:replace="layouts/main :: layout(~{::content})">
 
-    <h1 style="color:#FFD700;">🛒 Keranjang Kamu</h1>
+    <th:block th:fragment="content">
 
-    <!-- NOTIFIKASI SUCCESS -->
-    <p th:if="${success != null}"
-       style="color:#00ff88; margin-bottom:15px;"
-       th:text="${success}">
-    </p>
+        <h1 style="color:#FFD700;">Keranjang Kamu</h1>
 
-    <!-- JIKA KERANJANG KOSONG -->
-    <p th:if="${carts.size() == 0}" style="color:#ccc;">
-        Belum ada barang di keranjang
-    </p>
+        <p th:if="${success != null}"
+           style="color:#00ff88; margin-bottom:15px;"
+           th:text="${success}">
+        </p>
 
-    <!-- JIKA ADA ITEM -->
-    <div th:if="${carts.size() > 0}">
+        <p th:if="${carts.size() == 0}" style="color:#ccc;">
+            Belum ada barang di keranjang
+        </p>
 
-        <table cellpadding="10" cellspacing="0"
-               style="width:100%; color:#f5f5f5; border-collapse:collapse; margin-top:15px;">
+        <div th:if="${carts.size() > 0}">
 
-            <thead style="background:#2b2b2b; color:#FFD700;">
-                <tr>
-                    <th style="padding:12px;">Nama HT</th>
-                    <th style="padding:12px;">Harga</th>
-                    <th style="padding:12px;">Jumlah</th>
-                    <th style="padding:12px;">Total</th>
-                    <th style="padding:12px;">Aksi</th>
-                </tr>
-            </thead>
+            <table cellpadding="10" cellspacing="0"
+                   style="width:100%; color:#f5f5f5; border-collapse:collapse; margin-top:15px;">
 
-            <tbody>
+                <thead style="background:#2b2b2b; color:#FFD700;">
+                    <tr>
+                        <th style="padding:12px;">Nama HT</th>
+                        <th style="padding:12px;">Harga</th>
+                        <th style="padding:12px;">Jumlah</th>
+                        <th style="padding:12px;">Total</th>
+                        <th style="padding:12px;">Aksi</th>
+                    </tr>
+                </thead>
 
-                <!-- LOOP ITEM -->
-                <tr th:each="cart : ${carts}"
-                    style="border-bottom:1px solid #333;">
+                <tbody>
 
-                    <td style="padding:12px;" th:text="${cart.nama_ht}"></td>
+                    <tr th:each="cart : ${carts}" style="border-bottom:1px solid #333;">
 
-                    <td style="padding:12px;">
-                        Rp <span th:text="${#numbers.formatInteger(cart.harga, 0, 'POINT')}"></span>
-                    </td>
+                        <td style="padding:12px;" th:text="${cart.namaHt}"></td>
 
-                    <td style="padding:12px;">
-                        <form th:action="@{'/cart/update/' + ${cart.id}}" method="post" style="display:inline;">
-                            <input type="number" name="jumlah"
-                                   th:value="${cart.jumlah}" min="1"
-                                   style="width:60px; background:#1a1a1a; border:1px solid #555; 
-                                          color:#f5f5f5; text-align:center; border-radius:4px;">
-                            <button type="submit"
-                                    style="background:#FFD700; padding:5px 10px; border:none; border-radius:5px;">
-                                Update
-                            </button>
-                        </form>
-                    </td>
+                        <td style="padding:12px;">
+                            Rp <span th:text="${#numbers.formatInteger(cart.harga, 0, 'POINT')}"></span>
+                        </td>
 
-                    <td style="padding:12px;">
-                        Rp <span th:text="${#numbers.formatInteger(cart.harga * cart.jumlah, 0, 'POINT')}"></span>
-                    </td>
+                        <td style="padding:12px;">
+                            <form th:action="@{'/cart/update/' + ${cart.id}}" method="post" style="display:inline;">
+                                <input type="number" name="jumlah"
+                                       th:value="${cart.jumlah}" min="1"
+                                       style="width:60px; background:#1a1a1a; border:1px solid #555;
+                                              color:#f5f5f5; text-align:center; border-radius:4px;">
 
-                    <td style="padding:12px;">
-                        <form th:action="@{'/cart/delete/' + ${cart.id}}" method="post" style="display:inline;">
-                            <button type="submit"
-                                    style="background:#ff4d4d; padding:6px 12px; border:none; 
-                                           border-radius:5px; color:white;">
-                                Hapus
-                            </button>
-                        </form>
-                    </td>
+                                <button type="submit"
+                                        style="background:#FFD700; padding:5px 10px; border:none; border-radius:5px;">
+                                    Update
+                                </button>
+                            </form>
+                        </td>
 
-                </tr>
+                        <td style="padding:12px;">
+                            Rp <span th:text="${#numbers.formatInteger(cart.harga * cart.jumlah, 0, 'POINT')}"></span>
+                        </td>
 
-                <!-- GRAND TOTAL -->
-                <tr style="background:#2b2b2b;">
-                    <td colspan="3"
-                        style="text-align:right; font-weight:bold; padding:12px;">
-                        Grand Total:
-                    </td>
-                    <td colspan="2"
-                        style="font-weight:bold; color:#FFD700; padding:12px;">
-                        Rp <span th:text="${#numbers.formatInteger(grandTotal, 0, 'POINT')}"></span>
-                    </td>
-                </tr>
+                        <td style="padding:12px;">
+                            <form th:action="@{'/cart/delete/' + ${cart.id}}" method="post" style="display:inline;">
+                                <button type="submit"
+                                        style="background:#ff4d4d; padding:6px 12px; border:none;
+                                               border-radius:5px; color:white;">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
 
-            </tbody>
-        </table>
+                    </tr>
 
-        <!-- CHECKOUT BUTTON -->
-        <form th:action="@{/cart/checkout}" method="post"
-              style="margin-top:25px; text-align:right;">
-            <button type="submit"
-                    style="background:#FFD700; color:#111; padding:10px 18px; 
-                           font-weight:bold; border:none; border-radius:6px;">
-                Checkout Sekarang
-            </button>
-        </form>
+                    <tr style="background:#2b2b2b;">
+                        <td colspan="3" style="text-align:right; font-weight:bold; padding:12px;">
+                            Grand Total:
+                        </td>
+                        <td colspan="2" style="font-weight:bold; color:#FFD700; padding:12px;">
+                            Rp <span th:text="${#numbers.formatInteger(grandTotal, 0, 'POINT')}"></span>
+                        </td>
+                    </tr>
 
-    </div>
+                </tbody>
+            </table>
 
-</div>
+            <form th:action="@{/cart/checkout}" method="post"
+                  style="margin-top:25px; text-align:right;">
+                <button type="submit"
+                        style="background:#FFD700; color:#111; padding:10px 18px;
+                               font-weight:bold; border:none; border-radius:6px;">
+                    Checkout Sekarang
+                </button>
+            </form>
+
+        </div>
+
+    </th:block>
 
 </th:block>
 
