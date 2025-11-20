@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verify Email - AlRent</title>
+</head>
+
+<!-- Gunakan layout app (layouts/app.html) -->
+<html th:replace="layouts/app :: layout (~{::body})">
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card" style="background:#1a1a1a; border:1px solid #333; color:#f5f5f5;">
+                <div class="card-header" style="background:#2b2b2b; color:#FFD700; padding:12px 16px; font-weight:600;">
+                    Verify Your Email Address
+                </div>
+
+                <div class="card-body" style="padding:18px;">
+
+                    <!-- Flash "resent" -->
+                    <div th:if="${resent != null}" class="alert alert-success" role="alert"
+                         style="background:#0f3; color:#011; padding:10px 12px; border-radius:6px; margin-bottom:12px;">
+                        A fresh verification link has been sent to your email address.
+                    </div>
+
+                    <p style="margin-bottom:8px;">
+                        Before proceeding, please check your email for a verification link.
+                    </p>
+
+                    <p style="margin-bottom:12px;">
+                        If you did not receive the email,
+                        <form class="d-inline" th:action="@{/verification/resend}" method="post" style="display:inline;">
+                            <!-- Optional CSRF token when backend enabled:
+                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+                            <button type="submit" class="btn btn-link p-0 m-0 align-baseline"
+                                    style="background:none; border:none; color:#FFD700; cursor:pointer; padding:0;">
+                                click here to request another
+                            </button>.
+                        </form>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

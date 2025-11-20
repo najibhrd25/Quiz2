@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - AlRent</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { background:#111; font-family:'Rethink Sans'; color:#f5f5f5; display:flex; justify-content:center; align-items:center; height:100vh; }
+        .box { background:#1a1a1a; border:1px solid #333; border-radius:12px; padding:35px 40px; width:360px; text-align:center; }
+        input { width:100%; padding:10px; margin-bottom:15px; border-radius:6px; border:1px solid #333; background:#111; color:#fff; }
+        button { background:#FFD700; border:none; padding:10px; width:100%; border-radius:6px; cursor:pointer; font-weight:bold; }
+        button:hover { background:#ffea00; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2 style="color:#FFD700;">🔐 Ganti Password</h2>
+
+    <p th:if="${error}" style="color:#ff4d4d;" th:text="${error}"></p>
+    <p th:if="${success}" style="color:#00ff88;" th:text="${success}"></p>
+
+    <form action="/password/update" method="POST">
+        <input type="hidden" name="token" th:value="${token}">
+        <input type="password" name="password" placeholder="Password baru" required>
+        <button type="submit">Simpan Password Baru</button>
+    </form>
+
+    <p style="margin-top:15px;">
+        <a href="/login" style="color:#FFD700;">Kembali ke Login</a>
+    </p>
+</div>
+
+</body>
+</html>
