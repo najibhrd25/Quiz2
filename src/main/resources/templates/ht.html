@@ -18,7 +18,7 @@
                 margin-bottom:10px;
                 letter-spacing:0.5px;
             ">
-                Daftar HT Tersedia
+                HT List
             </h1>
 
             <p style="
@@ -26,7 +26,7 @@
                 font-size:16px;
                 margin-bottom:40px;
             ">
-                Pilih alat komunikasi terbaik untuk eventmu dengan kualitas premium dari
+                Choose your favorite HT from
                 <strong style="color:#FFD700;">AlRent</strong>.
             </p>
 
@@ -63,7 +63,7 @@
                     </h3>
 
                     <p style="color:#ccc; margin-bottom:15px;">
-                        Rp <span th:text="${#numbers.formatInteger(ht.harga, 0, 'POINT')}"></span> / hari
+                        Rp <span th:text="${#numbers.formatInteger(ht.harga, 0, 'POINT')}"></span> day
                     </p>
 
                     <form th:action="@{/cart/add}" method="post">
@@ -83,7 +83,7 @@
                                 "
                                 onmouseover="this.style.background='#ffea00';"
                                 onmouseout="this.style.background='#FFD700';">
-                            Tambah ke Keranjang
+                            Add to Cart
                         </button>
                     </form>
 
